@@ -51,7 +51,7 @@ export class AuthService {
     }
 
     validateToken(token: string): Observable<any> {
-        return this.http.get<any>(`${this.apiUrl}/validate`, {
+        return this.http.get<any>(`${this.apiUrl}/auth/validate`, {
             headers: { 'Authorization': `Bearer ${token}` }
         }).pipe(
             catchError(() => of(null))
@@ -59,11 +59,11 @@ export class AuthService {
     }
 
     register(username: string, password: string): Observable<any> {
-        return this.http.post<any>(`${this.apiUrl}/register`, { username, password });
+        return this.http.post<any>(`${this.apiUrl}/auth/register`, { username, password });
     }
 
     login(username: string, password: string): Observable<any> {
-        return this.http.post<any>(`${this.apiUrl}/login`, { username, password }).pipe(
+        return this.http.post<any>(`${this.apiUrl}/auth/login`, { username, password }).pipe(
             tap(response => {
                 if (response && response.token) {
                     this.token = response.token;
@@ -76,7 +76,7 @@ export class AuthService {
 
     logout(): Observable<any> {
         if (this.token) {
-            return this.http.post<any>(`${this.apiUrl}/logout`, {}, {
+            return this.http.post<any>(`${this.apiUrl}/auth/logout`, {}, {
                 headers: this.getAuthHeaders()
             }).pipe(
                 tap(() => {
