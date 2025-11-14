@@ -1,0 +1,13 @@
+<h2>Crear Nota</h2>
+<form (ngSubmit)="saveNote()">
+    <label>Título:</label>
+    <input [(ngModel)]="title" name="title" required />
+
+    <label>Contenido:</label>
+    <textarea [(ngModel)]="content" name="content"></textarea>
+
+    <label>Categorías (separadas por coma):</label>
+    <input [(ngModel)]="tags" name="tags" />
+
+    <button type="submit">Guardar</button>
+</form>

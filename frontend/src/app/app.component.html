@@ -1,0 +1,15 @@
+<header *ngIf="isAuthenticated">
+    <h1>Digital Paper</h1>
+    <nav>
+        <a routerLink="/notes">Notas</a>
+        <a routerLink="/create-note">Crear Nota</a>
+        <span class="user-info" *ngIf="currentUser">
+            <span class="username">{{ currentUser.username }}</span>
+            <button (click)="logout()" class="logout-btn">Cerrar Sesión</button>
+        </span>
+    </nav>
+</header>
+
+<main>
+    <router-outlet></router-outlet>
+</main>

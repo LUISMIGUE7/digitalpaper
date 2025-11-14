@@ -1,0 +1,44 @@
+<div class="login-container">
+    <div class="login-card">
+        <h2>{{ isRegisterMode ? 'Crear Cuenta' : 'Iniciar Sesión' }}</h2>
+        <p class="subtitle">{{ isRegisterMode ? 'Crea una nueva cuenta para comenzar' : 'Ingresa tus credenciales para continuar' }}</p>
+        
+        <form (ngSubmit)="onSubmit()">
+            <label>Nombre de Usuario:</label>
+            <input 
+                [(ngModel)]="username" 
+                name="username" 
+                type="text" 
+                placeholder="Ingresa tu usuario"
+                required 
+                [disabled]="isLoading"
+            />
+
+            <label>Contraseña:</label>
+            <input 
+                [(ngModel)]="password" 
+                name="password" 
+                type="password" 
+                placeholder="Ingresa tu contraseña"
+                required 
+                [disabled]="isLoading"
+            />
+
+            <div *ngIf="error" class="error-message">
+                {{ error }}
+            </div>
+
+            <button type="submit" [disabled]="isLoading" class="submit-btn">
+                {{ isLoading ? 'Cargando...' : (isRegisterMode ? 'Registrarse' : 'Iniciar Sesión') }}
+            </button>
+        </form>
+
+        <div class="toggle-mode">
+            <p>
+                {{ isRegisterMode ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?' }}
+                <a (click)="toggleMode()" class="link">{{ isRegisterMode ? 'Inicia sesión' : 'Regístrate' }}</a>
+            </p>
+        </div>
+    </div>
+</div>
+

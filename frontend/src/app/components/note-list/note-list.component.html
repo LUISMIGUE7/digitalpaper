@@ -1,0 +1,27 @@
+<div class="note-header">
+    <h2>{{ showArchived ? 'Notas Archivadas' : 'Notas Activas' }}</h2>
+    <div class="filters">
+        <input [(ngModel)]="filterTag" (input)="loadNotes()" placeholder="Filtrar por categoría..." />
+        <button (click)="toggleViewArchived()">
+            {{ showArchived ? 'Ver Activas' : 'Ver Archivadas' }}
+        </button>
+        <button routerLink="/create-note">Nueva Nota</button>
+    </div>
+</div>
+
+<ul class="note-list">
+    <li *ngFor="let note of (showArchived ? archivedNotes : notes)" class="note-card">
+        <strong>{{ note.title }}</strong>
+        <p>{{ note.content }}</p>
+        <div class="tags">
+            <span *ngFor="let tag of note.tags" class="tag">{{ tag.name }}</span>
+        </div>
+        <div class="actions">
+            <button (click)="editNote(note)">Editar</button>
+            <button (click)="toggleArchive(note)">
+                {{ note.archived ? 'Desarchivar' : 'Archivar' }}
+            </button>
+            <button class="danger" (click)="deleteNote(note)">Eliminar</button>
+        </div>
+    </li>
+</ul>
