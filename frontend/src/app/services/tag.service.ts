@@ -34,4 +34,3 @@ export class TagService {
         return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
     }
 }
-}
