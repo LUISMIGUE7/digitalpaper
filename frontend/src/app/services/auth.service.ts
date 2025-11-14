@@ -1,31 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap, catchError, of } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    private apiUrl = 'http://localhost:3000/auth';
+    private apiUrl = environment.apiBaseUrl;
     private currentUserSubject = new BehaviorSubject<any>(null);
     public currentUser$ = this.currentUserSubject.asObservable();
     private token: string | null = null;
 
     constructor(private http: HttpClient) {
-        // Verificar si hay un token guardado en localStorage
         const savedToken = localStorage.getItem('authToken');
         if (savedToken) {
             this.token = savedToken;
-            // Validar el token contra el servidor
             this.validateToken(savedToken).subscribe({
                 next: (user) => {
                     if (user) {
                         this.currentUserSubject.next(user);
                     } else {
-                        // Token inválido, limpiar
                         this.clearSession();
                     }
                 },
                 error: () => {
-                    // Error al validar, limpiar
                     this.clearSession();
                 }
             });
@@ -86,7 +83,6 @@ export class AuthService {
                     this.clearSession();
                 }),
                 catchError(() => {
-                    // Aunque falle en el servidor, limpiar localmente
                     this.clearSession();
                     return of(null);
                 })
@@ -102,4 +98,3 @@ export class AuthService {
         this.currentUserSubject.next(null);
     }
 }
-
