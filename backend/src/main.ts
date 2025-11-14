@@ -15,18 +15,18 @@ import { ConfigService } from '@nestjs/config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Obtener el puerto desde variables de entorno o usar el por defecto
-  const configService = app.get(ConfigService);
-  const port = configService.get<number>('PORT', 3000);
+  // Usa PORT de Render o 3000 en local
+  const port = Number(process.env.PORT) || 3000;
 
-  // Habilitar CORS para que el frontend pueda consumir la API
+  // Permite CORS desde tu frontend en producción y localhost en desarrollo
+  const frontendOrigin = process.env.FRONTEND_ORIGIN || 'http://localhost:4200';
   app.enableCors({
-    origin: 'http://localhost:4200', // Frontend Angular por defecto
+    origin: frontendOrigin,
     credentials: true,
   });
 
   await app.listen(port);
-  console.log(`Aplicación ejecutándose en http://localhost:${port}`);
+  console.log(`API escuchando en puerto ${port}`);
 }
 
 bootstrap();
