@@ -34,7 +34,13 @@ DB_SYNCHRONIZE=true
 # Server Configuration
 PORT=3000
 NODE_ENV=development
+
+# CORS Configuration (para producción)
+FRONTEND_ORIGIN=https://digitalpaper.vercel.app
 ```
+
+**IMPORTANTE**: En Render, configura `FRONTEND_ORIGIN` sin barra diagonal al final.
+Ejemplo: `https://tu-app.vercel.app` (NO `https://tu-app.vercel.app/`)
 
 ### Base de Datos
 

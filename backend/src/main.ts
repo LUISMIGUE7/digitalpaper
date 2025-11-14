@@ -19,9 +19,33 @@ async function bootstrap() {
   const port = Number(process.env.PORT) || 3000;
 
   // Permite CORS desde tu frontend en producción y localhost en desarrollo
-  const frontendOrigin = process.env.FRONTEND_ORIGIN || 'http://localhost:4200';
+  let frontendOrigin = process.env.FRONTEND_ORIGIN || 'http://localhost:4200';
+
+  // Normalizar: remover trailing slash si existe
+  frontendOrigin = frontendOrigin.replace(/\/$/, '');
+
+  // Permitir múltiples orígenes en desarrollo (localhost con diferentes puertos)
+  const allowedOrigins = [
+    frontendOrigin,
+    'http://localhost:4200',
+    'http://localhost:3000',
+  ];
+
   app.enableCors({
-    origin: frontendOrigin,
+    origin: (origin, callback) => {
+      // Si no hay origin (requests sin CORS como mobile apps), permitir
+      if (!origin) {
+        callback(null, true);
+      }
+      // Si el origin está en la lista blanca, permitir
+      else if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      }
+      // Si no está en la lista, denegar
+      else {
+        callback(new Error('CORS not allowed'));
+      }
+    },
     credentials: true,
   });
 
