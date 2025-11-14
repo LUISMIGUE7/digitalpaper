@@ -21,36 +21,50 @@ async function bootstrap() {
   // Permite CORS desde tu frontend en producción y localhost en desarrollo
   let frontendOrigin = process.env.FRONTEND_ORIGIN || 'http://localhost:4200';
 
-  // Normalizar: remover trailing slash si existe
-  frontendOrigin = frontendOrigin.replace(/\/$/, '');
-
-  // Permitir múltiples orígenes en desarrollo (localhost con diferentes puertos)
-  const allowedOrigins = [
-    frontendOrigin,
-    'http://localhost:4200',
-    'http://localhost:3000',
-  ];
+  // Normalizar: remover trailing slash y protocolo para comparación
+  const normalizedOrigin = frontendOrigin.replace(/\/$/, '');
 
   app.enableCors({
     origin: (origin, callback) => {
       // Si no hay origin (requests sin CORS como mobile apps), permitir
       if (!origin) {
         callback(null, true);
+        return;
       }
-      // Si el origin está en la lista blanca, permitir
-      else if (allowedOrigins.includes(origin)) {
+
+      // Normalizar origin recibido
+      const normalizedReceivedOrigin = origin.replace(/\/$/, '');
+
+      // Permitir si coincide exactamente
+      if (normalizedReceivedOrigin === normalizedOrigin) {
         callback(null, true);
+        return;
       }
-      // Si no está en la lista, denegar
-      else {
-        callback(new Error('CORS not allowed'));
+
+      // Permitir localhost en cualquier puerto (desarrollo)
+      if (normalizedReceivedOrigin.includes('localhost')) {
+        callback(null, true);
+        return;
       }
+
+      // Permitir vercel.app en cualquier dominio (desarrollo/producción)
+      if (normalizedReceivedOrigin.includes('vercel.app')) {
+        callback(null, true);
+        return;
+      }
+
+      // Si no cumple ninguna condición, denegar
+      console.warn(`CORS blocked for origin: ${origin}`);
+      callback(new Error('CORS not allowed'));
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   await app.listen(port);
   console.log(`API escuchando en puerto ${port}`);
+  console.log(`CORS configurado para frontend: ${normalizedOrigin}`);
 }
 
 bootstrap();
